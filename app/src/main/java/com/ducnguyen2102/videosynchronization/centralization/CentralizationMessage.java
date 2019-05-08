@@ -1,7 +1,7 @@
-package com.ducnguyen2102.videosynchronization;
+package com.ducnguyen2102.videosynchronization.centralization;
 
-public final class Message {
-    private Message() {
+public final class CentralizationMessage {
+    private CentralizationMessage() {
     }
 
     public static final String MESSAGE_REQUEST_COORDINATOR_PREFIX = "1000:";
