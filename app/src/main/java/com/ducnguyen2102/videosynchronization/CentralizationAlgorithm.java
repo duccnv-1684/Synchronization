@@ -3,7 +3,7 @@ package com.ducnguyen2102.videosynchronization;
 import android.content.Context;
 import android.os.Looper;
 
-import com.adroitandroid.near.model.Host;
+import com.ducnguyen.wifip2p.model.Host;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,8 +94,8 @@ public class CentralizationAlgorithm extends SynchronizationAlgorithm implements
     }
 
     @Override
-    public void onPeersUpdate(Set<Host> set) {
-        setHosts(set);
+    public void onPeersUpdate(Set<Host> hosts) {
+        setHosts(hosts);
         if (mIsConnectedToCoordinator) return;
         for (Host host : new ArrayList<>(getHosts())) {
             if (mIsCoordinatorFound) {

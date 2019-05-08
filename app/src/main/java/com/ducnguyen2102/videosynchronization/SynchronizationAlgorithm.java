@@ -3,9 +3,9 @@ package com.ducnguyen2102.videosynchronization;
 import android.content.Context;
 import android.os.Looper;
 
-import com.adroitandroid.near.connect.NearConnect;
-import com.adroitandroid.near.discovery.NearDiscovery;
-import com.adroitandroid.near.model.Host;
+import com.ducnguyen.wifip2p.connect.NearConnect;
+import com.ducnguyen.wifip2p.discovery.NearDiscovery;
+import com.ducnguyen.wifip2p.model.Host;
 
 import java.util.Set;
 

@@ -8,9 +8,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.adroitandroid.near.connect.NearConnect;
-import com.adroitandroid.near.discovery.NearDiscovery;
-import com.adroitandroid.near.model.Host;
+
+import com.ducnguyen.wifip2p.connect.NearConnect;
+import com.ducnguyen.wifip2p.discovery.NearDiscovery;
+import com.ducnguyen.wifip2p.model.Host;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +73,8 @@ public class MainActivity extends AppCompatActivity implements NearDiscovery.Lis
     }
 
     @Override
-    public void onPeersUpdate(Set<Host> set) {
-        List<Host> peers = new ArrayList<>(set);
+    public void onPeersUpdate(Set<Host> hosts) {
+        List<Host> peers = new ArrayList<>(hosts);
         for (Host peer : peers) {
             Log.e("ducnguyen", "Found " + peer.getName());
             mHost = peer;
