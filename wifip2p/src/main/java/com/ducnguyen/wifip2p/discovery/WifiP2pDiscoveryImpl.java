@@ -24,7 +24,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by pv on 20/06/17.
  */
 
-class NearDiscoveryImpl implements NearDiscovery {
+class WifiP2pDiscoveryImpl implements WifiP2pDiscovery {
     private final Listener mListener;
     private final long mPingInterval;
     private final long mDiscoveryTimeout;
@@ -37,11 +37,11 @@ class NearDiscoveryImpl implements NearDiscovery {
     private Disposable mDiscoveryDisposable;
     private Set<Host> mCurrentPeers;
 
-    NearDiscoveryImpl(long discoverableTimeout,
-                      long discoveryTimeout,
-                      long discoverablePingInterval,
-                      Listener listener, Looper looper,
-                      Context context) {
+    WifiP2pDiscoveryImpl(long discoverableTimeout,
+                         long discoveryTimeout,
+                         long discoverablePingInterval,
+                         Listener listener, Looper looper,
+                         Context context) {
         mDiscoverableTimeout = discoverableTimeout;
         mDiscoveryTimeout = discoveryTimeout;
         mPingInterval = discoverablePingInterval;

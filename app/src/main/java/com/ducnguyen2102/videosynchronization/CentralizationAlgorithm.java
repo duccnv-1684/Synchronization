@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class CentralizationAlgorithm extends SynchronizationAlgorithm implements AccessRequestQueue.OnQueueChangeListener {
-    private boolean mIsCoordinatorFound;
-    private String mCoordinatorId;
-    private List<String> mQueue;
+public final class CentralizationAlgorithm extends SynchronizationAlgorithm
+        implements AccessRequestQueue.OnQueueChangeListener {
     private Host mCoordinator;
+    private String mCoordinatorId;
+    private boolean mIsCoordinatorFound;
     private boolean mIsConnectedToCoordinator;
+    private List<String> mQueue;
 
     public CentralizationAlgorithm(Context context, Looper looper, String id) {
         super(context, looper, id);
@@ -68,7 +69,6 @@ public class CentralizationAlgorithm extends SynchronizationAlgorithm implements
 
             case Message.MESSAGE_REPLY_GIVE_ACCESS:
 
-
             default:
                 break;
 
@@ -76,6 +76,12 @@ public class CentralizationAlgorithm extends SynchronizationAlgorithm implements
     }
 
     private void findCoordinatorHost() {
+        for (Host host : new ArrayList<>(getHosts())) {
+            if (host.getName().equals(mCoordinatorId)) {
+                mCoordinator = host;
+                break;
+            }
+        }
     }
 
     @Override

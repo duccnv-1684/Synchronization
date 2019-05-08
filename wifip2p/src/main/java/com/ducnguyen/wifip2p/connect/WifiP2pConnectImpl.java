@@ -20,7 +20,7 @@ import java.util.Set;
  * Created by pv on 21/06/17.
  */
 
-class NearConnectImpl implements NearConnect {
+class WifiP2pConnectImpl implements WifiP2pConnect {
     private static final int SERVER_STARTED = 1;
     private static final int SERVER_STOPPED = 2;
     private final Context mContext;
@@ -34,7 +34,7 @@ class NearConnectImpl implements NearConnect {
     private TcpClientService.Listener mClientServiceListener;
     private TcpServerService.TcpServerListener mServerServiceListener;
 
-    NearConnectImpl(Context context, Listener listener, Looper looper, Set<Host> peers) {
+    WifiP2pConnectImpl(Context context, Listener listener, Looper looper, Set<Host> peers) {
         mContext = context;
         mListener = listener;
         mListenerLooper = looper;
@@ -51,7 +51,7 @@ class NearConnectImpl implements NearConnect {
                 Host candidateHost = null;
                 long jobId = 0;
                 while (sendDataQueue.size() > 0) {
-                    synchronized (NearConnectImpl.this) {
+                    synchronized (WifiP2pConnectImpl.this) {
                         if (sendDataQueue.size() > 0) {
                             candidateData = sendDataQueue.remove(0);
                             candidateHost = sendDestQueue.remove(0);
@@ -105,7 +105,7 @@ class NearConnectImpl implements NearConnect {
     @Override
     public long send(byte[] bytes, Host peer) {
         long jobId = System.currentTimeMillis();
-        synchronized (NearConnectImpl.this) {
+        synchronized (WifiP2pConnectImpl.this) {
             sendDataQueue.add(bytes);
             sendDestQueue.add(peer);
             sendJobQueue.add(jobId);

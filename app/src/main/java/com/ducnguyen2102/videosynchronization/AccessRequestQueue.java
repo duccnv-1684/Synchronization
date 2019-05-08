@@ -78,6 +78,5 @@ public class AccessRequestQueue<T> extends ArrayList<T> {
 
     public interface OnQueueChangeListener {
         void onItemChanged();
-
     }
 }

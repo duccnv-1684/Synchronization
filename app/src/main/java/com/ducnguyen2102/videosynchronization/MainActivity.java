@@ -9,8 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.ducnguyen.wifip2p.connect.NearConnect;
-import com.ducnguyen.wifip2p.discovery.NearDiscovery;
+import com.ducnguyen.wifip2p.connect.WifiP2pConnect;
+import com.ducnguyen.wifip2p.discovery.WifiP2pDiscovery;
 import com.ducnguyen.wifip2p.model.Host;
 
 import java.util.ArrayList;
@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements NearDiscovery.Listener, NearConnect.Listener {
-    private NearDiscovery mNearDiscovery;
-    private NearConnect mNearConnect;
+public class MainActivity extends AppCompatActivity implements WifiP2pDiscovery.Listener, WifiP2pConnect.Listener {
+    private WifiP2pDiscovery mWifiP2pDiscovery;
+    private WifiP2pConnect mWifiP2pConnect;
     private String id = UUID.randomUUID().toString();
     private Host mHost;
 
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements NearDiscovery.Lis
         uuid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mNearConnect.send(("Message from " + id + " to " + mHost.getName()).getBytes(), mHost);
+                mWifiP2pConnect.send(("Message from " + id + " to " + mHost.getName()).getBytes(), mHost);
             }
         });
     }
@@ -44,9 +44,9 @@ public class MainActivity extends AppCompatActivity implements NearDiscovery.Lis
     protected void onDestroy() {
         super.onDestroy();
         Log.e("ducnguyen", "onDestroy");
-        mNearConnect.stopReceiving(true);
-        mNearDiscovery.makeNonDiscoverable();
-        mNearDiscovery.stopDiscovery();
+        mWifiP2pConnect.stopReceiving(true);
+        mWifiP2pDiscovery.makeNonDiscoverable();
+        mWifiP2pDiscovery.stopDiscovery();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements NearDiscovery.Lis
         for (Host peer : peers) {
             Log.e("ducnguyen", "Found " + peer.getName());
             mHost = peer;
-//            mNearConnect.send(("Message from " + id + "to " + peer.getName()).getBytes(), peer);
+//            mWifiP2pConnect.send(("Message from " + id + "to " + peer.getName()).getBytes(), peer);
         }
     }
 
@@ -98,22 +98,22 @@ public class MainActivity extends AppCompatActivity implements NearDiscovery.Lis
     }
 
     private void initWifiP2p(){
-        mNearDiscovery = new NearDiscovery.Builder()
+        mWifiP2pDiscovery = new WifiP2pDiscovery.Builder()
                 .setContext(this)
                 .setDiscoverableTimeoutMillis(6000000)
                 .setDiscoveryTimeoutMillis(2000000)
                 .setDiscoverablePingIntervalMillis(15000)
                 .setDiscoveryListener(this, Looper.getMainLooper())
                 .build();
-        mNearConnect = new NearConnect.Builder()
+        mWifiP2pConnect = new WifiP2pConnect.Builder()
                 .setContext(this)
-                .fromDiscovery(mNearDiscovery)
+                .fromDiscovery(mWifiP2pDiscovery)
                 .setListener(this, Looper.getMainLooper())
                 .build();
     }
     private void startDiscoveryAndReceive(){
-        mNearDiscovery.makeDiscoverable(id);
-        mNearDiscovery.startDiscovery();
-        mNearConnect.startReceiving();
+        mWifiP2pDiscovery.makeDiscoverable(id);
+        mWifiP2pDiscovery.startDiscovery();
+        mWifiP2pConnect.startReceiving();
     }
 }

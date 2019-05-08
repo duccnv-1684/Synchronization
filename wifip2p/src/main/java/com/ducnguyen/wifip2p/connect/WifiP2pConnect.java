@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Looper;
 
 
-import com.ducnguyen.wifip2p.discovery.NearDiscovery;
+import com.ducnguyen.wifip2p.discovery.WifiP2pDiscovery;
 import com.ducnguyen.wifip2p.model.Host;
 
 import java.util.Set;
@@ -13,7 +13,7 @@ import java.util.Set;
  * Created by pv on 21/06/17.
  */
 
-public interface NearConnect {
+public interface WifiP2pConnect {
 
     long send(byte[] bytes, Host peer);
 
@@ -42,7 +42,7 @@ public interface NearConnect {
             return this;
         }
 
-        public Builder fromDiscovery(NearDiscovery discovery) {
+        public Builder fromDiscovery(WifiP2pDiscovery discovery) {
             if (discovery != null) {
                 mPeers = discovery.getAllAvailablePeers();
             } else {
@@ -56,8 +56,8 @@ public interface NearConnect {
             return this;
         }
 
-        public NearConnect build() {
-            return new NearConnectImpl(mContext, mListener, mListenerLooper, mPeers);
+        public WifiP2pConnect build() {
+            return new WifiP2pConnectImpl(mContext, mListener, mListenerLooper, mPeers);
         }
     }
 

@@ -11,7 +11,7 @@ import java.util.Set;
  * Created by pv on 20/06/17.
  */
 
-public interface NearDiscovery {
+public interface WifiP2pDiscovery {
 
     void makeDiscoverable(String hostName);
 
@@ -61,8 +61,8 @@ public interface NearDiscovery {
             return this;
         }
 
-        public NearDiscovery build() {
-            return new NearDiscoveryImpl(mDiscoverableTimeout, mDiscoveryTimeout,
+        public WifiP2pDiscovery build() {
+            return new WifiP2pDiscoveryImpl(mDiscoverableTimeout, mDiscoveryTimeout,
                     mDiscoverablePingInterval, mListener, mLooper, mContext);
         }
     }
