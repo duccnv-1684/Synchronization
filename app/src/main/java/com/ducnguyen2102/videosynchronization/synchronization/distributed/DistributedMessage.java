@@ -1,6 +1,6 @@
-package com.ducnguyen2102.videosynchronization.distributed;
+package com.ducnguyen2102.videosynchronization.synchronization.distributed;
 
-public class DistributedMessage {
+public final class DistributedMessage {
     private DistributedMessage() {
     }
 

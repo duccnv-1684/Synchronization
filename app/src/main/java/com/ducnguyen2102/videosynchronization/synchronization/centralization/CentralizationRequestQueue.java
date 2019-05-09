@@ -1,21 +1,21 @@
-package com.ducnguyen2102.videosynchronization.centralization;
+package com.ducnguyen2102.videosynchronization.synchronization.centralization;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class CentralizationRequestQueue<T> extends ArrayList<T> {
+public final class CentralizationRequestQueue<T> extends ArrayList<T> {
     private OnQueueChangeListener mListener;
 
-    public CentralizationRequestQueue(int initialCapacity, OnQueueChangeListener listener) {
+    CentralizationRequestQueue(int initialCapacity, OnQueueChangeListener listener) {
         super(initialCapacity);
         mListener = listener;
     }
 
-    public CentralizationRequestQueue(OnQueueChangeListener listener) {
+    CentralizationRequestQueue(OnQueueChangeListener listener) {
         mListener = listener;
     }
 
-    public CentralizationRequestQueue(Collection<? extends T> c, OnQueueChangeListener listener) {
+    CentralizationRequestQueue(Collection<? extends T> c, OnQueueChangeListener listener) {
         super(c);
         mListener = listener;
     }
@@ -40,7 +40,7 @@ public class CentralizationRequestQueue<T> extends ArrayList<T> {
 
 
     @Override
-    public boolean addAll(int index,Collection<? extends T> c) {
+    public boolean addAll(int index, Collection<? extends T> c) {
         mListener.onDataChanged();
         return super.addAll(index, c);
     }

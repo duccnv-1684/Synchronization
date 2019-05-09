@@ -1,4 +1,4 @@
-package com.ducnguyen2102.videosynchronization;
+package com.ducnguyen2102.videosynchronization.synchronization;
 
 import android.content.Context;
 import android.os.Looper;
@@ -68,5 +68,35 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
 
     public final String getId() {
         return mId;
+    }
+
+    @Override
+    public final void onSendComplete(long jobId) {
+
+    }
+
+    @Override
+    public final void onSendFailure(Throwable e, long jobId) {
+
+    }
+
+    @Override
+    public final void onStartListenFailure(Throwable e) {
+
+    }
+
+    @Override
+    public final void onDiscoveryTimeout() {
+        mWifiP2pDiscovery.startDiscovery();
+    }
+
+    @Override
+    public final void onDiscoveryFailure(Throwable e) {
+
+    }
+
+    @Override
+    public final void onDiscoverableTimeout() {
+        mWifiP2pDiscovery.makeDiscoverable(getId());
     }
 }

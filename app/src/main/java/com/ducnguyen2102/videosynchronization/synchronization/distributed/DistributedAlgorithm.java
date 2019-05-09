@@ -1,17 +1,17 @@
-package com.ducnguyen2102.videosynchronization.distributed;
+package com.ducnguyen2102.videosynchronization.synchronization.distributed;
 
 import android.content.Context;
 import android.os.Looper;
 
 import com.ducnguyen.wifip2p.model.Host;
-import com.ducnguyen2102.videosynchronization.SynchronizationAlgorithm;
+import com.ducnguyen2102.videosynchronization.synchronization.SynchronizationAlgorithm;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-public class DistributedAlgorithm extends SynchronizationAlgorithm {
+public final class DistributedAlgorithm extends SynchronizationAlgorithm {
     private boolean mIsRequesting;
     private boolean mIsAccessing;
     private List<Host> mRequestingHosts;
@@ -71,37 +71,7 @@ public class DistributedAlgorithm extends SynchronizationAlgorithm {
     }
 
     @Override
-    public void onSendComplete(long jobId) {
-
-    }
-
-    @Override
-    public void onSendFailure(Throwable e, long jobId) {
-
-    }
-
-    @Override
-    public void onStartListenFailure(Throwable e) {
-
-    }
-
-    @Override
     public void onPeersUpdate(Set<Host> hosts) {
         setHosts(hosts);
-    }
-
-    @Override
-    public void onDiscoveryTimeout() {
-
-    }
-
-    @Override
-    public void onDiscoveryFailure(Throwable e) {
-
-    }
-
-    @Override
-    public void onDiscoverableTimeout() {
-
     }
 }

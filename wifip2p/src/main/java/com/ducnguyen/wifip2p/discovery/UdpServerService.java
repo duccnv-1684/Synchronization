@@ -127,12 +127,12 @@ public class UdpServerService extends Service {
 
     private static class UdpBroadcastListeningHandler extends Handler {
         private static final int LISTEN = 5678;
-        private static UdpBroadcastListeningHandler handler;
+        private static UdpBroadcastListeningHandler sHandler;
         private DatagramSocket mSocket;
         private UdpBroadcastListener mListener;
         private ArrayMap<Host, StaleHostHandler> mHostHandlerMap;
         private Set<String> mCurrentIps;
-        private boolean isHostClientToo;
+        private boolean mIsHostClientToo;
         private long mStaleTimeout;
 
         UdpBroadcastListeningHandler(Looper looper) {
@@ -145,20 +145,20 @@ public class UdpServerService extends Service {
             HandlerThread handlerThread = new HandlerThread("ServerService") {
                 @Override
                 protected void onLooperPrepared() {
-                    handler = new UdpBroadcastListeningHandler(getLooper());
-                    handler.mHostHandlerMap = hostHandlerMap;
-                    handler.mCurrentIps = currentHostIps;
-                    handler.isHostClientToo = isHostClientToo;
-                    handler.mStaleTimeout = staleTimeout;
-                    handler.sendEmptyMessage(UdpBroadcastListeningHandler.LISTEN);
+                    sHandler = new UdpBroadcastListeningHandler(getLooper());
+                    sHandler.mHostHandlerMap = hostHandlerMap;
+                    sHandler.mCurrentIps = currentHostIps;
+                    sHandler.mIsHostClientToo = isHostClientToo;
+                    sHandler.mStaleTimeout = staleTimeout;
+                    sHandler.sendEmptyMessage(UdpBroadcastListeningHandler.LISTEN);
                 }
             };
             handlerThread.start();
         }
 
         private static void setListener(UdpBroadcastListener listener) {
-            if (handler != null) {
-                handler.updateListenersTo(listener);
+            if (sHandler != null) {
+                sHandler.updateListenersTo(listener);
             }
         }
 
@@ -195,7 +195,7 @@ public class UdpServerService extends Service {
                     //Packet received
                     Host host = new Host(packet.getAddress(), new String(packet.getData()).trim());
 
-                    if (isHostClientToo || !mCurrentIps.contains(host.getHostAddress())) {
+                    if (mIsHostClientToo || !mCurrentIps.contains(host.getHostAddress())) {
                         StaleHostHandler handler = mHostHandlerMap.get(host);
                         if (handler == null) {
                             handler = new StaleHostHandler(host, mHostHandlerMap, mListener);
@@ -257,9 +257,9 @@ public class UdpServerService extends Service {
         }
 
         static void stopListeningForBroadcasts() {
-            if (handler != null) {
-                handler.stop();
-                handler = null;
+            if (sHandler != null) {
+                sHandler.stop();
+                sHandler = null;
             }
         }
 

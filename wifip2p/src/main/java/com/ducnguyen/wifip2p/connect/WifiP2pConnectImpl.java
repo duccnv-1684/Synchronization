@@ -28,9 +28,9 @@ class WifiP2pConnectImpl implements WifiP2pConnect {
     private final Looper mListenerLooper;
     private final Set<Host> mPeers;
     private int mServerState;
-    private List<byte[]> sendDataQueue = new ArrayList<>();
-    private List<Host> sendDestQueue = new ArrayList<>();
-    private List<Long> sendJobQueue = new ArrayList<>();
+    private List<byte[]> mSendDataQueue = new ArrayList<>();
+    private List<Host> mSendDestQueue = new ArrayList<>();
+    private List<Long> mSendJobQueue = new ArrayList<>();
     private TcpClientService.Listener mClientServiceListener;
     private TcpServerService.TcpServerListener mServerServiceListener;
 
@@ -50,12 +50,12 @@ class WifiP2pConnectImpl implements WifiP2pConnect {
                 byte[] candidateData = null;
                 Host candidateHost = null;
                 long jobId = 0;
-                while (sendDataQueue.size() > 0) {
+                while (mSendDataQueue.size() > 0) {
                     synchronized (WifiP2pConnectImpl.this) {
-                        if (sendDataQueue.size() > 0) {
-                            candidateData = sendDataQueue.remove(0);
-                            candidateHost = sendDestQueue.remove(0);
-                            jobId = sendJobQueue.remove(0);
+                        if (mSendDataQueue.size() > 0) {
+                            candidateData = mSendDataQueue.remove(0);
+                            candidateHost = mSendDestQueue.remove(0);
+                            jobId = mSendJobQueue.remove(0);
                         }
                     }
                     binder.send(candidateData, candidateHost, jobId);
@@ -106,9 +106,9 @@ class WifiP2pConnectImpl implements WifiP2pConnect {
     public long send(byte[] bytes, Host peer) {
         long jobId = System.currentTimeMillis();
         synchronized (WifiP2pConnectImpl.this) {
-            sendDataQueue.add(bytes);
-            sendDestQueue.add(peer);
-            sendJobQueue.add(jobId);
+            mSendDataQueue.add(bytes);
+            mSendDestQueue.add(peer);
+            mSendJobQueue.add(jobId);
         }
 
         Intent intent = new Intent(mContext.getApplicationContext(), TcpClientService.class);

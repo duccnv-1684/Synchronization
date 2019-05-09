@@ -1,10 +1,10 @@
-package com.ducnguyen2102.videosynchronization.centralization;
+package com.ducnguyen2102.videosynchronization.synchronization.centralization;
 
 import android.content.Context;
 import android.os.Looper;
 
 import com.ducnguyen.wifip2p.model.Host;
-import com.ducnguyen2102.videosynchronization.SynchronizationAlgorithm;
+import com.ducnguyen2102.videosynchronization.synchronization.SynchronizationAlgorithm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +20,6 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
 
     public CentralizationAlgorithm(Context context, Looper looper, String id) {
         super(context, looper, id);
-    }
-
-    public void makeCoordinator() {
-        mIsCoordinatorFound = true;
-        mCoordinatorId = getId();
-        mRequestQueue = new CentralizationRequestQueue<>(this);
     }
 
     @Override
@@ -75,30 +69,6 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
         }
     }
 
-    private void findCoordinatorHost() {
-        for (Host host : new ArrayList<>(getHosts())) {
-            if (host.getName().equals(mCoordinatorId)) {
-                mCoordinator = host;
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void onSendComplete(long l) {
-
-    }
-
-    @Override
-    public void onSendFailure(Throwable throwable, long l) {
-
-    }
-
-    @Override
-    public void onStartListenFailure(Throwable throwable) {
-
-    }
-
     @Override
     public void onPeersUpdate(Set<Host> hosts) {
         setHosts(hosts);
@@ -115,28 +85,19 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
         }
     }
 
-    public void enqueue() {
-        sendMessage(CentralizationMessage.messageRequestEnqueue(getId()), mCoordinator);
+    public void makeCoordinator() {
+        mIsCoordinatorFound = true;
+        mCoordinatorId = getId();
+        mRequestQueue = new CentralizationRequestQueue<>(this);
     }
 
-    public void dequeue() {
-        sendMessage(CentralizationMessage.messageRequestDequeue(getId()), mCoordinator);
-    }
-
-
-    @Override
-    public void onDiscoveryTimeout() {
-
-    }
-
-    @Override
-    public void onDiscoveryFailure(Throwable throwable) {
-
-    }
-
-    @Override
-    public void onDiscoverableTimeout() {
-
+    private void findCoordinatorHost() {
+        for (Host host : new ArrayList<>(getHosts())) {
+            if (host.getName().equals(mCoordinatorId)) {
+                mCoordinator = host;
+                break;
+            }
+        }
     }
 
     @Override
@@ -148,5 +109,13 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
                 break;
             }
         }
+    }
+
+    public void enqueue() {
+        sendMessage(CentralizationMessage.messageRequestEnqueue(getId()), mCoordinator);
+    }
+
+    public void dequeue() {
+        sendMessage(CentralizationMessage.messageRequestDequeue(getId()), mCoordinator);
     }
 }
