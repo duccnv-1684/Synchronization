@@ -18,13 +18,16 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
     private List<String> mAcceptedHostIds;
     private List<Host> mRequestQueue;
     private long mTimeStamp;
+    private OnDistributedSynchronizationListener mListener;
 
-    public DistributedAlgorithm(Context context, Looper looper, String id) {
+    public DistributedAlgorithm(Context context, Looper looper, String id, OnDistributedSynchronizationListener listener) {
         super(context, looper, id);
+        mListener = listener;
         mRequestQueue = new ArrayList<>();
     }
 
-    public final void requestAccess() {
+    @Override
+    public void requestAccess() {
         mRequestingHosts = new ArrayList<>(getHosts());
         mIsAccessing = false;
         mIsRequesting = true;
@@ -36,12 +39,8 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
         }
     }
 
-    private void startAccessing() {
-        mIsAccessing = true;
-        mIsRequesting = false;
-    }
-
-    private void stopAccessing() {
+    @Override
+    public void cancelRequest() {
         mIsAccessing = false;
         mIsRequesting = false;
         for (Host host : mRequestQueue)
@@ -64,8 +63,11 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
                 break;
             case DistributedMessage.MESSAGE_REPLY_OK:
                 mAcceptedHostIds.add(DistributedMessage.getMessageContent(message));
-                if (!mIsAccessing && mAcceptedHostIds.size() == mRequestingHosts.size())
-                    startAccessing();
+                if (!mIsAccessing && mAcceptedHostIds.size() == mRequestingHosts.size()) {
+                    mIsAccessing = true;
+                    mIsRequesting = false;
+                    mListener.onAccepted();
+                }
                 break;
         }
     }
@@ -73,5 +75,9 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
     @Override
     public void onPeersUpdate(Set<Host> hosts) {
         setHosts(hosts);
+    }
+
+    public interface OnDistributedSynchronizationListener {
+        void onAccepted();
     }
 }

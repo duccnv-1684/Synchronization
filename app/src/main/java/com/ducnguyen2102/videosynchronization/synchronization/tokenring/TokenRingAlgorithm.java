@@ -14,12 +14,14 @@ import java.util.Set;
 public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
     private Host mPreviousHost;
     private Host mNextHost;
-    private boolean isRequesting;
+    private boolean mIsRequesting;
     private boolean mIsFinding;
-    private boolean isNeedGiveToken;
+    private boolean mIsNeedGiveToken;
+    private OnTokenRingSynchronizationListener mListener;
 
-    public TokenRingAlgorithm(Context context, Looper looper, String id) {
+    public TokenRingAlgorithm(Context context, Looper looper, String id, OnTokenRingSynchronizationListener listener) {
         super(context, looper, id);
+        mListener = listener;
     }
 
     @Override
@@ -36,10 +38,10 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
             case TokenRingMessage.MESSAGE_REPLY_BECOME_NEXT_HOST_PREFIX:
                 mIsFinding = false;
                 mNextHost = sender;
-                if (isNeedGiveToken) {
-                    sendMessage(TokenRingMessage.messageGiveToken(getId()), mNextHost);
-                    isNeedGiveToken = false;
-                }
+//                if (mIsNeedGiveToken) {
+//                    sendMessage(TokenRingMessage.messageGiveToken(getId()), mNextHost);
+//                    mIsNeedGiveToken = false;
+//                }
                 break;
             case TokenRingMessage.MESSAGE_REQUEST_UPDATE_NEXT_HOST_PREFIX:
                 mNextHost = null;
@@ -49,20 +51,20 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
             case TokenRingMessage.MESSAGE_REPLY_UPDATE_NEXT_HOST_PREFIX:
                 break;
             case TokenRingMessage.MESSAGE_GIVE_TOKEN_PREFIX:
-                startAccessing();
-
+                if (mIsNeedGiveToken) mListener.onAccepted();
+                else sendMessage(TokenRingMessage.messageGiveToken(getId()), mNextHost);
         }
     }
 
-    private void startAccessing() {
-
+    @Override
+    public void requestAccess() {
+        mIsNeedGiveToken = true;
     }
 
-    private void stopAccessing() {
-        if (mNextHost != null) {
-            sendMessage(TokenRingMessage.messageGiveToken(getId()), mNextHost);
-            isNeedGiveToken = false;
-        } else isNeedGiveToken = true;
+
+    @Override
+    public void cancelRequest() {
+        mIsNeedGiveToken = false;
     }
 
     @Override
@@ -82,17 +84,21 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
         int hostIndex = hostIds.indexOf(getId());
         int nextHostIndex = (++hostIndex == hostIds.size()) ? 0 : hostIndex;
         String nextHostId = hostIds.get(nextHostIndex);
-        Host nextHope = null;
+        Host nextHost = null;
         for (Host host : hosts) {
             if (host.getName().equals(nextHostId)) {
-                nextHope = host;
+                nextHost = host;
                 break;
             }
         }
-        sendMessage(TokenRingMessage.messageRequestBecomeNextHost(getId()), nextHope);
+        sendMessage(TokenRingMessage.messageRequestBecomeNextHost(getId()), nextHost);
     }
 
     private boolean isFounded() {
         return mNextHost != null;
+    }
+
+    public interface OnTokenRingSynchronizationListener {
+        void onAccepted();
     }
 }

@@ -54,6 +54,10 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
         mWifiP2pDiscovery.stopDiscovery();
     }
 
+    public abstract void requestAccess();
+
+    public abstract void cancelRequest();
+
     public final void sendMessage(String message, Host host) {
         mWifiP2pConnect.send(message.getBytes(), host);
     }

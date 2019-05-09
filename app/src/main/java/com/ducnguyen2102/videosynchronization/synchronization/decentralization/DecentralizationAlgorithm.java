@@ -14,6 +14,16 @@ public final class DecentralizationAlgorithm extends SynchronizationAlgorithm {
     }
 
     @Override
+    public void requestAccess() {
+
+    }
+
+    @Override
+    public void cancelRequest() {
+
+    }
+
+    @Override
     public void onReceive(byte[] bytes, Host sender) {
 
     }
