@@ -11,7 +11,10 @@ final class CentralizationMessage {
     static final String MESSAGE_REPLY_ENQUEUE_PREFIX = "1004:";
     static final String MESSAGE_REQUEST_DEQUEUE_PREFIX = "1005:";
     static final String MESSAGE_REPLY_DEQUEUE_PREFIX = "1006:";
-    static final String MESSAGE_REPLY_GIVE_ACCESS = "1007";
+    static final String MESSAGE_REPLY_GIVE_ACCESS_PREFIX = "1007:";
+    static final String MESSAGE_REQUEST_ELECTION_PREFIX = "1008:";
+    static final String MESSAGE_REPLY_ELECTION_ACCEPT_PREFIX = "1009:";
+    static final String MESSAGE_REPLY_ELECTION_DENY_PREFIX = "1010:";
 
     static String messageRequestCoordinator(String senderId) {
         return makeMessage(MESSAGE_REQUEST_COORDINATOR_PREFIX, senderId);
@@ -42,9 +45,19 @@ final class CentralizationMessage {
     }
 
     static String messageReplyGiveAccess(String senderId) {
-        return makeMessage(MESSAGE_REPLY_GIVE_ACCESS, senderId);
+        return makeMessage(MESSAGE_REPLY_GIVE_ACCESS_PREFIX, senderId);
     }
 
+    static String messageRequestElection(String senderID){
+        return makeMessage(MESSAGE_REQUEST_ELECTION_PREFIX,senderID);
+
+    }
+    static String messageReplyElectionAccept(String senderID){
+        return makeMessage(MESSAGE_REPLY_ELECTION_ACCEPT_PREFIX,senderID);
+    }
+    static String messageReplyElectionDenyElection(String senderID){
+        return makeMessage(MESSAGE_REPLY_ELECTION_DENY_PREFIX,senderID);
+    }
 
     static String getMessagePrefix(String message) {
         return message.substring(0, 5);

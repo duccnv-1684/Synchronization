@@ -6,6 +6,10 @@ import android.os.Looper;
 import com.ducnguyen.wifip2p.connect.WifiP2pConnect;
 import com.ducnguyen.wifip2p.discovery.WifiP2pDiscovery;
 import com.ducnguyen.wifip2p.model.Host;
+import com.ducnguyen2102.videosynchronization.synchronization.centralization.CentralizationAlgorithm;
+import com.ducnguyen2102.videosynchronization.synchronization.decentralization.DecentralizationAlgorithm;
+import com.ducnguyen2102.videosynchronization.synchronization.distributed.DistributedAlgorithm;
+import com.ducnguyen2102.videosynchronization.synchronization.tokenring.TokenRingAlgorithm;
 
 import java.util.Set;
 
@@ -48,7 +52,7 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
         mWifiP2pConnect.startReceiving();
     }
 
-    public void stopSynchronize() {
+    public final void stopSynchronize() {
         mWifiP2pConnect.stopReceiving(true);
         mWifiP2pDiscovery.makeNonDiscoverable();
         mWifiP2pDiscovery.stopDiscovery();
@@ -62,11 +66,11 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
         mWifiP2pConnect.send(message.getBytes(), host);
     }
 
-    public Set<Host> getHosts() {
+    public final Set<Host> getHosts() {
         return mHosts;
     }
 
-    public void setHosts(Set<Host> hosts) {
+    public final void setHosts(Set<Host> hosts) {
         mHosts = hosts;
     }
 
@@ -102,5 +106,61 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
     @Override
     public final void onDiscoverableTimeout() {
         mWifiP2pDiscovery.makeDiscoverable(getId());
+    }
+
+    public interface OnRequestAcceptListener {
+        void onAccepted();
+    }
+
+    public static class Builder {
+        private Context mContext;
+        private Looper mLooper;
+        private String mId;
+        private SynchronizationAlgorithmType mSynchronizationAlgorithmType;
+        private OnRequestAcceptListener mListener;
+
+        public Builder() {
+        }
+
+        public Builder setContext(Context context) {
+            mContext = context;
+            return this;
+        }
+
+        public Builder setLooper(Looper looper) {
+            mLooper = looper;
+            return this;
+        }
+
+        public Builder setId(String id) {
+            mId = id;
+            return this;
+        }
+
+        public Builder setSynchronizationAlgorithmType(SynchronizationAlgorithmType synchronizationAlgorithmType) {
+            mSynchronizationAlgorithmType = synchronizationAlgorithmType;
+            return this;
+        }
+
+        public Builder setListener(OnRequestAcceptListener listener) {
+            mListener = listener;
+            return this;
+        }
+
+        public SynchronizationAlgorithm build() {
+            switch (mSynchronizationAlgorithmType) {
+                case CENTRALIZATION_ALGORITHM:
+                    return new CentralizationAlgorithm(mContext, mLooper, mId, mListener);
+                case DECENTRALIZATION_ALGORITHM:
+                    return new DecentralizationAlgorithm(mContext, mLooper, mId, mListener);
+                case DISTRIBUTED_ALGORITHM:
+                    return new DistributedAlgorithm(mContext, mLooper, mId, mListener);
+                case TOKEN_RING_ALGORITHM:
+                    return new TokenRingAlgorithm(mContext, mLooper, mId, mListener);
+                default:
+                    return null;
+            }
+        }
+
     }
 }

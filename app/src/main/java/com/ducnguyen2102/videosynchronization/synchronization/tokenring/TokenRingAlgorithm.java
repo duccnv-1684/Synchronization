@@ -17,9 +17,9 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
     private boolean mIsRequesting;
     private boolean mIsFinding;
     private boolean mIsNeedGiveToken;
-    private OnTokenRingSynchronizationListener mListener;
+    private OnRequestAcceptListener mListener;
 
-    public TokenRingAlgorithm(Context context, Looper looper, String id, OnTokenRingSynchronizationListener listener) {
+    public TokenRingAlgorithm(Context context, Looper looper, String id, OnRequestAcceptListener listener) {
         super(context, looper, id);
         mListener = listener;
     }
@@ -38,10 +38,6 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
             case TokenRingMessage.MESSAGE_REPLY_BECOME_NEXT_HOST_PREFIX:
                 mIsFinding = false;
                 mNextHost = sender;
-//                if (mIsNeedGiveToken) {
-//                    sendMessage(TokenRingMessage.messageGiveToken(getId()), mNextHost);
-//                    mIsNeedGiveToken = false;
-//                }
                 break;
             case TokenRingMessage.MESSAGE_REQUEST_UPDATE_NEXT_HOST_PREFIX:
                 mNextHost = null;
@@ -96,9 +92,5 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
 
     private boolean isFounded() {
         return mNextHost != null;
-    }
-
-    public interface OnTokenRingSynchronizationListener {
-        void onAccepted();
     }
 }

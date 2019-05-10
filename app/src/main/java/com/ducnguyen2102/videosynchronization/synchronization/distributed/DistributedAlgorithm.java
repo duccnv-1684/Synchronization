@@ -18,9 +18,9 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
     private List<String> mAcceptedHostIds;
     private List<Host> mRequestQueue;
     private long mTimeStamp;
-    private OnDistributedSynchronizationListener mListener;
+    private OnRequestAcceptListener mListener;
 
-    public DistributedAlgorithm(Context context, Looper looper, String id, OnDistributedSynchronizationListener listener) {
+    public DistributedAlgorithm(Context context, Looper looper, String id, OnRequestAcceptListener listener) {
         super(context, looper, id);
         mListener = listener;
         mRequestQueue = new ArrayList<>();
@@ -75,9 +75,5 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
     @Override
     public void onPeersUpdate(Set<Host> hosts) {
         setHosts(hosts);
-    }
-
-    public interface OnDistributedSynchronizationListener {
-        void onAccepted();
     }
 }

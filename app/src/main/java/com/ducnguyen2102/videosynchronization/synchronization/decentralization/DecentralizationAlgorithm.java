@@ -9,8 +9,11 @@ import com.ducnguyen2102.videosynchronization.synchronization.SynchronizationAlg
 import java.util.Set;
 
 public final class DecentralizationAlgorithm extends SynchronizationAlgorithm {
-    public DecentralizationAlgorithm(Context context, Looper looper, String id) {
+    private OnRequestAcceptListener mListener;
+
+    public DecentralizationAlgorithm(Context context, Looper looper, String id, OnRequestAcceptListener listener) {
         super(context, looper, id);
+        this.mListener = listener;
     }
 
     @Override
