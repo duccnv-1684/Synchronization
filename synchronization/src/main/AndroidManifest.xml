@@ -1,0 +1,23 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ducnguyen.synchronization">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+
+        <service android:name="com.ducnguyen.synchronization.wifip2p.discovery.UdpBroadcastService" />
+
+        <service android:name="com.ducnguyen.synchronization.wifip2p.discovery.UdpServerService" />
+
+        <service android:name="com.ducnguyen.synchronization.wifip2p.connect.TcpClientService" />
+
+        <service android:name="com.ducnguyen.synchronization.wifip2p.connect.TcpServerService" />
+
+    </application>
+
+</manifest>

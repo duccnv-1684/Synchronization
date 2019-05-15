@@ -1,1 +1,1 @@
-include ':app', ':wifip2p'
+include ':app', ':synchronization'
