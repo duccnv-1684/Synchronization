@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/VideoSynchronization.iml" filepath="$PROJECT_DIR$/VideoSynchronization.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/wifip2p/wifip2p.iml" filepath="$PROJECT_DIR$/wifip2p/wifip2p.iml" />
+      <module fileurl="file://$PROJECT_DIR$/synchronization/synchronization.iml" filepath="$PROJECT_DIR$/synchronization/synchronization.iml" />
     </modules>
   </component>
 </project>
