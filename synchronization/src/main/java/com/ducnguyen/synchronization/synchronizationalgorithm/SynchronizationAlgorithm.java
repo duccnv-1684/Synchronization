@@ -108,7 +108,9 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
         mWifiP2pDiscovery.makeDiscoverable(getId());
     }
 
-    public interface OnRequestAcceptListener {
+    public interface OnSynchronizationEventListener {
+        void onReady();
+
         void onAccepted();
     }
 
@@ -117,7 +119,7 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
         private Looper mLooper;
         private String mId;
         private SynchronizationAlgorithmType mSynchronizationAlgorithmType;
-        private OnRequestAcceptListener mListener;
+        private OnSynchronizationEventListener mListener;
 
         public Builder() {
         }
@@ -142,7 +144,7 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
             return this;
         }
 
-        public Builder setListener(OnRequestAcceptListener listener) {
+        public Builder setListener(OnSynchronizationEventListener listener) {
             mListener = listener;
             return this;
         }

@@ -18,9 +18,9 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
     private List<String> mAcceptedHostIds;
     private List<Host> mRequestQueue;
     private long mTimeStamp;
-    private OnRequestAcceptListener mListener;
+    private OnSynchronizationEventListener mListener;
 
-    public DistributedAlgorithm(Context context, Looper looper, String id, OnRequestAcceptListener listener) {
+    public DistributedAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
         super(context, looper, id);
         mListener = listener;
         mRequestQueue = new ArrayList<>();

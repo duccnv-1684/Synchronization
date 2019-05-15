@@ -22,9 +22,10 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
     private boolean mIsElecting;
     private boolean mIsDenied;
     private List<String> mRequestQueue;
-    private OnRequestAcceptListener mListener;
+    private OnSynchronizationEventListener mListener;
+    private int mPreviousHopeCount;
 
-    public CentralizationAlgorithm(Context context, Looper looper, String id, OnRequestAcceptListener listener) {
+    public CentralizationAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
         super(context, looper, id);
         mListener = listener;
     }
@@ -34,7 +35,6 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
         String message = new String(bytes);
         switch (CentralizationMessage.getMessagePrefix(message)) {
             case CentralizationMessage.MESSAGE_REQUEST_COORDINATOR_PREFIX:
-                //TODO Done
                 if (mIsCoordinatorFound)
                     sendMessage(CentralizationMessage.messageReplyCoordinatorFound(mCoordinatorId), host);
                 else
@@ -42,7 +42,6 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
                 break;
 
             case CentralizationMessage.MESSAGE_REPLY_COORDINATOR_FOUND_PREFIX:
-                //TODO Done
                 mIsFindingCoordinator = false;
                 mIsCoordinatorFound = true;
                 mCoordinatorId = CentralizationMessage.getMessageContent(message);
@@ -52,8 +51,35 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
                 mCoordinatorHopeCount--;
                 if (mCoordinatorHopeCount == 0) {
                     mIsFindingCoordinator = false;
-                    startCoordinatorElection();
+                    if (mPreviousHopeCount != getHosts().size()) {
+                        findCoordinator();
+                    } else {
+                        startCoordinatorElection();
+                    }
                 }
+                break;
+
+            case CentralizationMessage.MESSAGE_REQUEST_ELECTION_PREFIX:
+                if (getId().compareTo(host.getName()) > 0) {
+                    sendMessage(CentralizationMessage.messageReplyElectionDenyElection(getId()), host);
+                    if (!mIsElecting && !mIsDenied) startCoordinatorElection();
+                } else {
+                    mIsDenied = true;
+                    sendMessage(CentralizationMessage.messageReplyElectionAccept(getId()), host);
+                }
+                break;
+
+            case CentralizationMessage.MESSAGE_REPLY_ELECTION_ACCEPT_PREFIX:
+                mElectionHopeCount--;
+                if (mElectionHopeCount == 0) {
+                    mIsElecting = false;
+                    mIsDenied = false;
+                    setAsCoordinator();
+                }
+                break;
+            case CentralizationMessage.MESSAGE_REPLY_ELECTION_DENY_PREFIX:
+                mIsElecting = false;
+                mIsDenied = true;
                 break;
 
             case CentralizationMessage.MESSAGE_REQUEST_ENQUEUE_PREFIX:
@@ -62,7 +88,6 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
                 break;
 
             case CentralizationMessage.MESSAGE_REPLY_ENQUEUE_PREFIX:
-                //TODO Done
                 break;
 
             case CentralizationMessage.MESSAGE_REQUEST_DEQUEUE_PREFIX:
@@ -71,33 +96,12 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
                 break;
 
             case CentralizationMessage.MESSAGE_REPLY_DEQUEUE_PREFIX:
-                //TODO Done
                 break;
 
             case CentralizationMessage.MESSAGE_REPLY_GIVE_ACCESS_PREFIX:
                 mListener.onAccepted();
                 break;
-            case CentralizationMessage.MESSAGE_REQUEST_ELECTION_PREFIX:
-                if (getId().compareTo(host.getName()) > 0) {
-                    sendMessage(CentralizationMessage.messageReplyElectionDenyElection(getId()), host);
-                    if (!mIsElecting) startCoordinatorElection();
-                } else {
-                    mIsDenied = true;
-                    sendMessage(CentralizationMessage.messageReplyElectionAccept(getId()), host);
-                }
-                break;
-            case CentralizationMessage.MESSAGE_REPLY_ELECTION_ACCEPT_PREFIX:
-                mElectionHopeCount--;
-                if (mElectionHopeCount == 0) {
-                    setAsCoordinator();
-                    mIsElecting = false;
-                    mIsDenied = false;
-                }
-                break;
-            case CentralizationMessage.MESSAGE_REPLY_ELECTION_DENY_PREFIX:
-                mIsElecting = false;
-                mIsDenied = true;
-                break;
+
             default:
                 break;
 
@@ -155,7 +159,7 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
         List<Host> hosts = new ArrayList<>(getHosts());
         for (Host host : hosts)
             sendMessage(CentralizationMessage.messageReplyCoordinatorFound(mCoordinatorId), host);
-
+        mListener.onReady();
     }
 
     private void findCoordinator() {
@@ -167,6 +171,7 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
         mIsFindingCoordinator = true;
         List<Host> hosts = new ArrayList<>(getHosts());
         mCoordinatorHopeCount = hosts.size();
+        mPreviousHopeCount = mCoordinatorHopeCount;
         for (Host host : hosts)
             sendMessage(CentralizationMessage.messageRequestCoordinator(getId()), host);
     }
@@ -175,9 +180,11 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
         for (Host host : new ArrayList<>(getHosts())) {
             if (host.getName().equals(mCoordinatorId)) {
                 mCoordinator = host;
-                mIsCoordinatorFound = true;
-                break;
+                mIsConnectedToCoordinator = true;
+                mListener.onReady();
+                return;
             }
         }
+        connectToCoordinator();
     }
 }

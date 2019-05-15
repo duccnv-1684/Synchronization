@@ -9,9 +9,9 @@ import com.ducnguyen.synchronization.wifip2p.model.Host;
 import java.util.Set;
 
 public final class DecentralizationAlgorithm extends SynchronizationAlgorithm {
-    private OnRequestAcceptListener mListener;
+    private OnSynchronizationEventListener mListener;
 
-    public DecentralizationAlgorithm(Context context, Looper looper, String id, OnRequestAcceptListener listener) {
+    public DecentralizationAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
         super(context, looper, id);
         this.mListener = listener;
     }
