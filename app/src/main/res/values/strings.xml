@@ -10,7 +10,7 @@
     <string name="error_app_name_invalid">App Name Invalid</string>
     <string name="error_id_invalid">ID Invalid</string>
     <array name="synchronization_algorithms">
-        <item>Centralization Algorithm</item>
+        <item>Centralized Algorithm</item>
         <item>Distributed Algorithm</item>
         <item>Token Ring Algorithm</item>
     </array>

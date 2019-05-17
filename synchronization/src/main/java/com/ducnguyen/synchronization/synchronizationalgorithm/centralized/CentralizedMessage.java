@@ -1,7 +1,7 @@
-package com.ducnguyen.synchronization.synchronizationalgorithm.centralization;
+package com.ducnguyen.synchronization.synchronizationalgorithm.centralized;
 
-final class CentralizationMessage {
-    private CentralizationMessage() {
+final class CentralizedMessage {
+    private CentralizedMessage() {
     }
 
     static final String MESSAGE_REQUEST_COORDINATOR_PREFIX = "1000:";

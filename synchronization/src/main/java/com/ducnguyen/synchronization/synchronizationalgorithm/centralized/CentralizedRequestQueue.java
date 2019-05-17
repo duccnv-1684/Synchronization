@@ -1,21 +1,21 @@
-package com.ducnguyen.synchronization.synchronizationalgorithm.centralization;
+package com.ducnguyen.synchronization.synchronizationalgorithm.centralized;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-final class CentralizationRequestQueue<T> extends ArrayList<T> {
+final class CentralizedRequestQueue<T> extends ArrayList<T> {
     private OnQueueChangeListener mListener;
 
-    CentralizationRequestQueue(int initialCapacity, OnQueueChangeListener listener) {
+    CentralizedRequestQueue(int initialCapacity, OnQueueChangeListener listener) {
         super(initialCapacity);
         mListener = listener;
     }
 
-    CentralizationRequestQueue(OnQueueChangeListener listener) {
+    CentralizedRequestQueue(OnQueueChangeListener listener) {
         mListener = listener;
     }
 
-    CentralizationRequestQueue(Collection<? extends T> c, OnQueueChangeListener listener) {
+    CentralizedRequestQueue(Collection<? extends T> c, OnQueueChangeListener listener) {
         super(c);
         mListener = listener;
     }

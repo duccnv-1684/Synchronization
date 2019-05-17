@@ -3,8 +3,8 @@ package com.ducnguyen.synchronization.synchronizationalgorithm;
 import android.content.Context;
 import android.os.Looper;
 
-import com.ducnguyen.synchronization.synchronizationalgorithm.centralization.CentralizationAlgorithm;
-import com.ducnguyen.synchronization.synchronizationalgorithm.decentralization.DecentralizationAlgorithm;
+import com.ducnguyen.synchronization.synchronizationalgorithm.centralized.CentralizedAlgorithm;
+import com.ducnguyen.synchronization.synchronizationalgorithm.decentralized.DecentralizedAlgorithm;
 import com.ducnguyen.synchronization.synchronizationalgorithm.distributed.DistributedAlgorithm;
 import com.ducnguyen.synchronization.synchronizationalgorithm.tokenring.TokenRingAlgorithm;
 import com.ducnguyen.synchronization.wifip2p.connect.WifiP2pConnect;
@@ -151,10 +151,10 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
 
         public SynchronizationAlgorithm build() {
             switch (mSynchronizationAlgorithmType) {
-                case CENTRALIZATION_ALGORITHM:
-                    return new CentralizationAlgorithm(mContext, mLooper, mId, mListener);
-                case DECENTRALIZATION_ALGORITHM:
-                    return new DecentralizationAlgorithm(mContext, mLooper, mId, mListener);
+                case CENTRALIZED_ALGORITHM:
+                    return new CentralizedAlgorithm(mContext, mLooper, mId, mListener);
+                case DECENTRALIZED_ALGORITHM:
+                    return new DecentralizedAlgorithm(mContext, mLooper, mId, mListener);
                 case DISTRIBUTED_ALGORITHM:
                     return new DistributedAlgorithm(mContext, mLooper, mId, mListener);
                 case TOKEN_RING_ALGORITHM:

@@ -1,4 +1,4 @@
-package com.ducnguyen.synchronization.synchronizationalgorithm.centralization;
+package com.ducnguyen.synchronization.synchronizationalgorithm.centralized;
 
 import android.content.Context;
 import android.os.Looper;
@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public final class CentralizationAlgorithm extends SynchronizationAlgorithm
-        implements CentralizationRequestQueue.OnQueueChangeListener {
+public final class CentralizedAlgorithm extends SynchronizationAlgorithm
+        implements CentralizedRequestQueue.OnQueueChangeListener {
     private Host mCoordinator;
     private String mCoordinatorId;
     private int mCoordinatorHopeCount = 0;
@@ -25,7 +25,7 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
     private OnSynchronizationEventListener mListener;
     private int mPreviousHopeCount;
 
-    public CentralizationAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
+    public CentralizedAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
         super(context, looper, id);
         mListener = listener;
     }
@@ -33,21 +33,21 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
     @Override
     public void onReceive(byte[] bytes, Host host) {
         String message = new String(bytes);
-        switch (CentralizationMessage.getMessagePrefix(message)) {
-            case CentralizationMessage.MESSAGE_REQUEST_COORDINATOR_PREFIX:
+        switch (CentralizedMessage.getMessagePrefix(message)) {
+            case CentralizedMessage.MESSAGE_REQUEST_COORDINATOR_PREFIX:
                 if (mIsCoordinatorFound)
-                    sendMessage(CentralizationMessage.messageReplyCoordinatorFound(mCoordinatorId), host);
+                    sendMessage(CentralizedMessage.messageReplyCoordinatorFound(mCoordinatorId), host);
                 else
-                    sendMessage(CentralizationMessage.messageReplyCoordinatorNotFound(getId()), host);
+                    sendMessage(CentralizedMessage.messageReplyCoordinatorNotFound(getId()), host);
                 break;
 
-            case CentralizationMessage.MESSAGE_REPLY_COORDINATOR_FOUND_PREFIX:
+            case CentralizedMessage.MESSAGE_REPLY_COORDINATOR_FOUND_PREFIX:
                 mIsFindingCoordinator = false;
                 mIsCoordinatorFound = true;
-                mCoordinatorId = CentralizationMessage.getMessageContent(message);
+                mCoordinatorId = CentralizedMessage.getMessageContent(message);
                 connectToCoordinator();
 
-            case CentralizationMessage.MESSAGE_REPLY_COORDINATOR_NOT_FOUND_PREFIX:
+            case CentralizedMessage.MESSAGE_REPLY_COORDINATOR_NOT_FOUND_PREFIX:
                 mCoordinatorHopeCount--;
                 if (mCoordinatorHopeCount == 0) {
                     mIsFindingCoordinator = false;
@@ -59,17 +59,17 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
                 }
                 break;
 
-            case CentralizationMessage.MESSAGE_REQUEST_ELECTION_PREFIX:
+            case CentralizedMessage.MESSAGE_REQUEST_ELECTION_PREFIX:
                 if (getId().compareTo(host.getName()) > 0) {
-                    sendMessage(CentralizationMessage.messageReplyElectionDenyElection(getId()), host);
+                    sendMessage(CentralizedMessage.messageReplyElectionDenyElection(getId()), host);
                     if (!mIsElecting && !mIsDenied) startCoordinatorElection();
                 } else {
                     mIsDenied = true;
-                    sendMessage(CentralizationMessage.messageReplyElectionAccept(getId()), host);
+                    sendMessage(CentralizedMessage.messageReplyElectionAccept(getId()), host);
                 }
                 break;
 
-            case CentralizationMessage.MESSAGE_REPLY_ELECTION_ACCEPT_PREFIX:
+            case CentralizedMessage.MESSAGE_REPLY_ELECTION_ACCEPT_PREFIX:
                 mElectionHopeCount--;
                 if (mElectionHopeCount == 0) {
                     mIsElecting = false;
@@ -77,28 +77,28 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
                     setAsCoordinator();
                 }
                 break;
-            case CentralizationMessage.MESSAGE_REPLY_ELECTION_DENY_PREFIX:
+            case CentralizedMessage.MESSAGE_REPLY_ELECTION_DENY_PREFIX:
                 mIsElecting = false;
                 mIsDenied = true;
                 break;
 
-            case CentralizationMessage.MESSAGE_REQUEST_ENQUEUE_PREFIX:
-                mRequestQueue.add(CentralizationMessage.getMessageContent(message));
-                sendMessage(CentralizationMessage.messageReplyEnqueue(getId()), host);
+            case CentralizedMessage.MESSAGE_REQUEST_ENQUEUE_PREFIX:
+                mRequestQueue.add(CentralizedMessage.getMessageContent(message));
+                sendMessage(CentralizedMessage.messageReplyEnqueue(getId()), host);
                 break;
 
-            case CentralizationMessage.MESSAGE_REPLY_ENQUEUE_PREFIX:
+            case CentralizedMessage.MESSAGE_REPLY_ENQUEUE_PREFIX:
                 break;
 
-            case CentralizationMessage.MESSAGE_REQUEST_DEQUEUE_PREFIX:
-                mRequestQueue.remove(CentralizationMessage.getMessageContent(message));
-                sendMessage(CentralizationMessage.messageReplyDequeue(getId()), host);
+            case CentralizedMessage.MESSAGE_REQUEST_DEQUEUE_PREFIX:
+                mRequestQueue.remove(CentralizedMessage.getMessageContent(message));
+                sendMessage(CentralizedMessage.messageReplyDequeue(getId()), host);
                 break;
 
-            case CentralizationMessage.MESSAGE_REPLY_DEQUEUE_PREFIX:
+            case CentralizedMessage.MESSAGE_REPLY_DEQUEUE_PREFIX:
                 break;
 
-            case CentralizationMessage.MESSAGE_REPLY_GIVE_ACCESS_PREFIX:
+            case CentralizedMessage.MESSAGE_REPLY_GIVE_ACCESS_PREFIX:
                 mListener.onAccepted();
                 break;
 
@@ -119,7 +119,7 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
         String accessId = mRequestQueue.get(0);
         for (Host host : getHosts()) {
             if (host.getName().equals(accessId)) {
-                sendMessage(CentralizationMessage.messageReplyGiveAccess(getId()), host);
+                sendMessage(CentralizedMessage.messageReplyGiveAccess(getId()), host);
                 break;
             }
         }
@@ -128,12 +128,12 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
     @Override
     public void requestAccess() {
         if (mCoordinatorId.equals(getId())) mRequestQueue.add(getId());
-        else sendMessage(CentralizationMessage.messageRequestEnqueue(getId()), mCoordinator);
+        else sendMessage(CentralizedMessage.messageRequestEnqueue(getId()), mCoordinator);
     }
 
     @Override
     public void cancelRequest() {
-        sendMessage(CentralizationMessage.messageRequestDequeue(getId()), mCoordinator);
+        sendMessage(CentralizedMessage.messageRequestDequeue(getId()), mCoordinator);
     }
 
     private void startCoordinatorElection() {
@@ -145,7 +145,7 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
         mElectionHopeCount = hosts.size();
         for (Host host : hosts) {
             if (mIsDenied) return;
-            sendMessage(CentralizationMessage.messageRequestElection(getId()), host);
+            sendMessage(CentralizedMessage.messageRequestElection(getId()), host);
         }
     }
 
@@ -155,10 +155,10 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
         mIsCoordinatorFound = true;
         mIsConnectedToCoordinator = true;
         mCoordinatorId = getId();
-        mRequestQueue = new CentralizationRequestQueue<>(this);
+        mRequestQueue = new CentralizedRequestQueue<>(this);
         List<Host> hosts = new ArrayList<>(getHosts());
         for (Host host : hosts)
-            sendMessage(CentralizationMessage.messageReplyCoordinatorFound(mCoordinatorId), host);
+            sendMessage(CentralizedMessage.messageReplyCoordinatorFound(mCoordinatorId), host);
         mListener.onReady();
     }
 
@@ -173,7 +173,7 @@ public final class CentralizationAlgorithm extends SynchronizationAlgorithm
         mCoordinatorHopeCount = hosts.size();
         mPreviousHopeCount = mCoordinatorHopeCount;
         for (Host host : hosts)
-            sendMessage(CentralizationMessage.messageRequestCoordinator(getId()), host);
+            sendMessage(CentralizedMessage.messageRequestCoordinator(getId()), host);
     }
 
     private void connectToCoordinator() {

@@ -6,6 +6,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -25,28 +26,33 @@ public class VideoSynchronizationActivity extends AppCompatActivity implements V
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_synchronization);
+        Uri uri = Uri.parse("rtmp://184.72.239.149/vod/mp4:bigbuckbunny_1500.mp4");
         mAddress = findViewById(R.id.address);
         mApp = findViewById(R.id.app);
         mKey = findViewById(R.id.key);
         findViewById(R.id.start).setOnClickListener(this);
         findViewById(R.id.stop).setOnClickListener(this);
         mPlayerView = findViewById(R.id.player_view);
-        mBuilder = new AlertDialog.Builder(this)
-                .setTitle(R.string.msg_title_dialog)
+        mBuilder = new AlertDialog.Builder(this);
+        mBuilder.setTitle("Select Synchronization Algorithm")
                 .setItems(R.array.synchronization_algorithms, (dialog, which) -> {
                     switch (which) {
                         case 0:
+                            Toast.makeText(this, "Centralized", Toast.LENGTH_SHORT).show();
                             break;
                         case 1:
+                            Toast.makeText(this, "Distributed", Toast.LENGTH_SHORT).show();
                             break;
                         case 2:
+                            Toast.makeText(this, "Token Ring", Toast.LENGTH_SHORT).show();
+                            break;
+                        default:
                             break;
                     }
+                    startPlayingVideo(uri);
                 });
         mExoPlayer = ExoPlayerFactory.newSimpleInstance(this);
         mPlayerView.setPlayer(mExoPlayer);
-        Uri uri = Uri.parse("rtmp://184.72.239.149/vod/mp4:bigbuckbunny_1500.mp4");
-        startPlayingVideo(uri);
     }
 
     @Override

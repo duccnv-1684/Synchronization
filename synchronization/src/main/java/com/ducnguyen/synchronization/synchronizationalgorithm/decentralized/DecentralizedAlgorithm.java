@@ -1,4 +1,4 @@
-package com.ducnguyen.synchronization.synchronizationalgorithm.decentralization;
+package com.ducnguyen.synchronization.synchronizationalgorithm.decentralized;
 
 import android.content.Context;
 import android.os.Looper;
@@ -8,10 +8,10 @@ import com.ducnguyen.synchronization.wifip2p.model.Host;
 
 import java.util.Set;
 
-public final class DecentralizationAlgorithm extends SynchronizationAlgorithm {
+public final class DecentralizedAlgorithm extends SynchronizationAlgorithm {
     private OnSynchronizationEventListener mListener;
 
-    public DecentralizationAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
+    public DecentralizedAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
         super(context, looper, id);
         this.mListener = listener;
     }
