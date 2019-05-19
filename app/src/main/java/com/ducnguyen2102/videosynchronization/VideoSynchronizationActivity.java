@@ -1,8 +1,10 @@
 package com.ducnguyen2102.videosynchronization;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +29,8 @@ public class VideoSynchronizationActivity extends AppCompatActivity implements V
     private SynchronizationAlgorithm.Builder mSynchronizationBuilder;
     private boolean mIsStarted;
     private TextView mStartStop;
+    private ProgressDialog mProgressDialog;
+    private TextView mUUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,20 +93,28 @@ public class VideoSynchronizationActivity extends AppCompatActivity implements V
     }
 
     private void stopPlayingVideo() {
-        mExoPlayer.stop();
-        mExoPlayer.release();
+        if (mExoPlayer != null) {
+            mExoPlayer.stop();
+            mExoPlayer.release();
+        }
     }
 
     private void initUi() {
         mStartStop = findViewById(R.id.start_stop);
         mStartStop.setOnClickListener(this);
         findViewById(R.id.chage_algorithm).setOnClickListener(this);
+        mUUID = findViewById(R.id.uuid);
         mPlayerView = findViewById(R.id.player_view);
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage(getString(R.string.R_string_msg_prepare));
+        mProgressDialog.setCancelable(false);
     }
 
     private void buildSynchronization() {
+        String uuid = UUID.randomUUID().toString();
+        mUUID.setText(uuid);
         mSynchronizationBuilder = new SynchronizationAlgorithm.Builder()
-                .setId(UUID.randomUUID().toString())
+                .setId(uuid)
                 .setContext(this)
                 .setLooper(Looper.getMainLooper())
                 .setListener(this);
@@ -128,6 +140,8 @@ public class VideoSynchronizationActivity extends AppCompatActivity implements V
                     }
                     mSynchronization = mSynchronizationBuilder.build();
                     mSynchronization.startSynchronize();
+                    mProgressDialog.show();
+                    new Handler().postDelayed(() -> mProgressDialog.dismiss(), 3000);
                 });
     }
 

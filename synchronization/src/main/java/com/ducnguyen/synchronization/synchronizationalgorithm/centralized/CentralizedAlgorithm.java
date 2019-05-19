@@ -24,6 +24,7 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
     private List<String> mRequestQueue;
     private OnSynchronizationEventListener mListener;
     private int mPreviousHopeCount;
+    private boolean mIsPending;
 
     public CentralizedAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
         super(context, looper, id);
@@ -89,14 +90,32 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
             case CentralizedMessage.MESSAGE_REQUEST_ENQUEUE_PREFIX:
                 mRequestQueue.add(CentralizedMessage.getMessageContent(message));
                 sendMessage(CentralizedMessage.messageReplyEnqueue(getId()), host);
+                if (mRequestQueue.size() == 1) {
+                    sendMessage(CentralizedMessage.messageReplyGiveAccess(getId()), host);
+                }
+
                 break;
 
             case CentralizedMessage.MESSAGE_REPLY_ENQUEUE_PREFIX:
                 break;
 
             case CentralizedMessage.MESSAGE_REQUEST_DEQUEUE_PREFIX:
-                mRequestQueue.remove(CentralizedMessage.getMessageContent(message));
                 sendMessage(CentralizedMessage.messageReplyDequeue(getId()), host);
+                int index = mRequestQueue.indexOf(CentralizedMessage.getMessageContent(message));
+                mRequestQueue.remove(index);
+                if (index == 0 && mRequestQueue.size() != 0) {
+                    String accessId = mRequestQueue.get(0);
+                    if (accessId.equals(getId())){
+                        mListener.onAccepted();
+                        return;
+                    }
+                    for (Host accessHost : getHosts()) {
+                        if (accessHost.getName().equals(accessId)) {
+                            sendMessage(CentralizedMessage.messageReplyGiveAccess(getId()), accessHost);
+                            break;
+                        }
+                    }
+                }
                 break;
 
             case CentralizedMessage.MESSAGE_REPLY_DEQUEUE_PREFIX:
@@ -115,29 +134,42 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
     @Override
     public void onPeersUpdate(Set<Host> hosts) {
         setHosts(hosts);
-        findCoordinator();
     }
 
     @Override
     public void onDataChanged() {
-        String accessId = mRequestQueue.get(0);
-        for (Host host : getHosts()) {
-            if (host.getName().equals(accessId)) {
-                sendMessage(CentralizedMessage.messageReplyGiveAccess(getId()), host);
-                break;
-            }
-        }
     }
 
     @Override
     public void requestAccess() {
-        if (mCoordinatorId.equals(getId())) mRequestQueue.add(getId());
-        else sendMessage(CentralizedMessage.messageRequestEnqueue(getId()), mCoordinator);
+        if (!mIsConnectedToCoordinator) {
+            findCoordinator();
+            mIsPending = true;
+        } else {
+            if (mCoordinatorId.equals(getId())) {
+                mRequestQueue.add(getId());
+                if (mRequestQueue.get(0).equals(getId())) {
+                    mListener.onAccepted();
+                }
+            } else sendMessage(CentralizedMessage.messageRequestEnqueue(getId()), mCoordinator);
+        }
     }
 
     @Override
     public void cancelRequest() {
-        sendMessage(CentralizedMessage.messageRequestDequeue(getId()), mCoordinator);
+        if (mCoordinatorId.equals(getId())) {
+            int index = mRequestQueue.indexOf(getId());
+            mRequestQueue.remove(index);
+            if (index == 0 && mRequestQueue.size() != 0) {
+                String accessId = mRequestQueue.get(0);
+                for (Host accessHost : getHosts()) {
+                    if (accessHost.getName().equals(accessId)) {
+                        sendMessage(CentralizedMessage.messageReplyGiveAccess(getId()), accessHost);
+                        break;
+                    }
+                }
+            }
+        } else sendMessage(CentralizedMessage.messageRequestDequeue(getId()), mCoordinator);
     }
 
     private void startCoordinatorElection() {
@@ -164,6 +196,10 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
         for (Host host : hosts)
             sendMessage(CentralizedMessage.messageReplyCoordinatorFound(mCoordinatorId), host);
         mListener.onReady();
+        if (mIsPending) {
+            mIsPending = false;
+            requestAccess();
+        }
     }
 
     private void findCoordinator() {
@@ -181,11 +217,16 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
     }
 
     private void connectToCoordinator() {
+        if (mIsConnectedToCoordinator) return;
         for (Host host : new ArrayList<>(getHosts())) {
             if (host.getName().equals(mCoordinatorId)) {
                 mCoordinator = host;
                 mIsConnectedToCoordinator = true;
                 mListener.onReady();
+                if (mIsPending) {
+                    mIsPending = false;
+                    requestAccess();
+                }
                 return;
             }
         }

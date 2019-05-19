@@ -10,6 +10,7 @@
     <string name="error_address_invalid">Address Invalid</string>
     <string name="error_app_name_invalid">App Name Invalid</string>
     <string name="error_id_invalid">ID Invalid</string>
+    <string name="R.string.msg_prepare">Preparing device</string>
     <array name="synchronization_algorithms">
         <item>Centralized Algorithm</item>
         <item>Distributed Algorithm</item>
