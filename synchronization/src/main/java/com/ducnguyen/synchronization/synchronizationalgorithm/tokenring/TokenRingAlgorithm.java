@@ -55,7 +55,7 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
             case TokenRingMessage.MESSAGE_GIVE_TOKEN_PREFIX:
                 mIsTokenCreated = true;
                 if (mIsNeedGiveToken) {
-                    mListener.onAccepted();
+                    mListener.onRequestAccepted();
                     mIsKeepingToken = true;
                 } else sendMessage(TokenRingMessage.messageGiveToken(getId()), mNextHost);
         }

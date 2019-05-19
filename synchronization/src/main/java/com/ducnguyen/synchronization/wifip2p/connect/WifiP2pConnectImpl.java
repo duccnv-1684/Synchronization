@@ -103,11 +103,11 @@ class WifiP2pConnectImpl implements WifiP2pConnect {
     }
 
     @Override
-    public long send(byte[] bytes, Host peer) {
+    public long send(byte[] bytes, Host host) {
         long jobId = System.currentTimeMillis();
         synchronized (WifiP2pConnectImpl.this) {
             mSendDataQueue.add(bytes);
-            mSendDestQueue.add(peer);
+            mSendDestQueue.add(host);
             mSendJobQueue.add(jobId);
         }
 

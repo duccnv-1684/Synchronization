@@ -2,7 +2,6 @@ package com.ducnguyen.synchronization.synchronizationalgorithm.distributed;
 
 import android.content.Context;
 import android.os.Looper;
-import android.util.Log;
 
 import com.ducnguyen.synchronization.synchronizationalgorithm.SynchronizationAlgorithm;
 import com.ducnguyen.synchronization.wifip2p.model.Host;
@@ -69,7 +68,7 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
                 if (!mIsAccessing && mAcceptedHostIds.size() == mRequestingHosts.size()) {
                     mIsAccessing = true;
                     mIsRequesting = false;
-                    mListener.onAccepted();
+                    mListener.onRequestAccepted();
                 }
                 break;
         }

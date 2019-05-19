@@ -15,7 +15,7 @@ import java.util.Set;
 
 public interface WifiP2pConnect {
 
-    long send(byte[] bytes, Host peer);
+    long send(byte[] bytes, Host host);
 
     void startReceiving();
 

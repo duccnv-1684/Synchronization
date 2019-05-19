@@ -72,11 +72,7 @@ public class VideoSynchronizationActivity extends AppCompatActivity implements V
     }
 
     @Override
-    public void onReady() {
-    }
-
-    @Override
-    public void onAccepted() {
+    public void onRequestAccepted() {
         startPlayingVideo();
     }
 

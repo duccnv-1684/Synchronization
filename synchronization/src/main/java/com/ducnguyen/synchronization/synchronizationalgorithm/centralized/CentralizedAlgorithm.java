@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public final class CentralizedAlgorithm extends SynchronizationAlgorithm
-        implements CentralizedRequestQueue.OnQueueChangeListener {
+public final class CentralizedAlgorithm extends SynchronizationAlgorithm {
     private Host mCoordinator;
     private String mCoordinatorId;
     private int mCoordinatorHopeCount = 0;
@@ -106,7 +105,7 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
                 if (index == 0 && mRequestQueue.size() != 0) {
                     String accessId = mRequestQueue.get(0);
                     if (accessId.equals(getId())){
-                        mListener.onAccepted();
+                        mListener.onRequestAccepted();
                         return;
                     }
                     for (Host accessHost : getHosts()) {
@@ -122,7 +121,7 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
                 break;
 
             case CentralizedMessage.MESSAGE_REPLY_GIVE_ACCESS_PREFIX:
-                mListener.onAccepted();
+                mListener.onRequestAccepted();
                 break;
 
             default:
@@ -137,10 +136,6 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
     }
 
     @Override
-    public void onDataChanged() {
-    }
-
-    @Override
     public void requestAccess() {
         if (!mIsConnectedToCoordinator) {
             findCoordinator();
@@ -149,7 +144,7 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
             if (mCoordinatorId.equals(getId())) {
                 mRequestQueue.add(getId());
                 if (mRequestQueue.get(0).equals(getId())) {
-                    mListener.onAccepted();
+                    mListener.onRequestAccepted();
                 }
             } else sendMessage(CentralizedMessage.messageRequestEnqueue(getId()), mCoordinator);
         }
@@ -191,11 +186,10 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
         mIsCoordinatorFound = true;
         mIsConnectedToCoordinator = true;
         mCoordinatorId = getId();
-        mRequestQueue = new CentralizedRequestQueue<>(this);
+        mRequestQueue = new ArrayList<>();
         List<Host> hosts = new ArrayList<>(getHosts());
         for (Host host : hosts)
             sendMessage(CentralizedMessage.messageReplyCoordinatorFound(mCoordinatorId), host);
-        mListener.onReady();
         if (mIsPending) {
             mIsPending = false;
             requestAccess();
@@ -222,7 +216,6 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
             if (host.getName().equals(mCoordinatorId)) {
                 mCoordinator = host;
                 mIsConnectedToCoordinator = true;
-                mListener.onReady();
                 if (mIsPending) {
                     mIsPending = false;
                     requestAccess();

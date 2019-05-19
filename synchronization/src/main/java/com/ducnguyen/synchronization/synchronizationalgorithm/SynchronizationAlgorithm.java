@@ -111,9 +111,7 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
     }
 
     public interface OnSynchronizationEventListener {
-        void onReady();
-
-        void onAccepted();
+        void onRequestAccepted();
     }
 
     public static class Builder {
