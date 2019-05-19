@@ -2,6 +2,7 @@ package com.ducnguyen.synchronization.synchronizationalgorithm.distributed;
 
 import android.content.Context;
 import android.os.Looper;
+import android.util.Log;
 
 import com.ducnguyen.synchronization.synchronizationalgorithm.SynchronizationAlgorithm;
 import com.ducnguyen.synchronization.wifip2p.model.Host;
@@ -52,13 +53,15 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
         String message = new String(bytes);
         switch (DistributedMessage.getMessagePrefix(message)) {
             case DistributedMessage.MESSAGE_REQUEST_ACCESS:
-                if (!mIsAccessing && !mIsRequesting)
-                    sendMessage(DistributedMessage.messageReplyOk(getId()), sender);
-                else if (mIsRequesting) {
+                if (mIsAccessing) {
+                    mRequestQueue.add(sender);
+                } else if (mIsRequesting) {
                     long timeStamp = Long.valueOf(DistributedMessage.getMessageContent(message));
                     if (this.mTimeStamp > timeStamp)
                         sendMessage(DistributedMessage.messageReplyOk(getId()), sender);
                     else mRequestQueue.add(sender);
+                } else {
+                    sendMessage(DistributedMessage.messageReplyOk(getId()), sender);
                 }
                 break;
             case DistributedMessage.MESSAGE_REPLY_OK:

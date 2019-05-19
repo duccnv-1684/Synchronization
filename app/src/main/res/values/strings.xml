@@ -4,7 +4,8 @@
     <string name="streaming_app_name">Streaming App Name</string>
     <string name="streaming_id">Streaming ID</string>
     <string name="start_streaming">Start Streaming</string>
-    <string name="stop_streaming">Stop Streaming</string>
+    <string name="stop_streaming">"Stop Streaming</string>
+    <string name="change_algorithm">Change Algorithm</string>
     <string name="msg_title_dialog">Select Synchronization Algorithm</string>
     <string name="error_address_invalid">Address Invalid</string>
     <string name="error_app_name_invalid">App Name Invalid</string>

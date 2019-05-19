@@ -14,8 +14,8 @@ import com.ducnguyen.synchronization.wifip2p.model.Host;
 import java.util.Set;
 
 public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listener, WifiP2pDiscovery.Listener {
-    private static final long DISCOVERABLE_TIME_OUT = 30 * 1000L;
-    private static final long DISCOVERY_TIME_OUT = 15 * 1000L;
+    private static final long DISCOVERABLE_TIME_OUT = 2 * 60 * 60 * 1000L;
+    private static final long DISCOVERY_TIME_OUT = 2 * 60 * 60 * 1000L;
     private static final long PING_INTERVAL_TIME_OUT = 5 * 1000L;
     private Context mContext;
     private Looper mLooper;

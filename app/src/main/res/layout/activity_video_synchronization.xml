@@ -15,68 +15,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/address"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/player_view">
-
-        <android.support.design.widget.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/streaming_address" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/app"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/address">
-
-        <android.support.design.widget.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/streaming_app_name" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/key"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app">
-
-        <android.support.design.widget.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/streaming_id" />
-    </android.support.design.widget.TextInputLayout>
 
     <TextView
-        android:id="@+id/start"
+        android:id="@+id/start_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
         android:background="@android:color/holo_orange_dark"
         android:padding="@dimen/dp_8"
         android:paddingStart="@dimen/dp_16"
@@ -86,26 +29,29 @@
         android:text="@string/start_streaming"
         android:textColor="@android:color/white"
         android:textSize="@dimen/sp_18"
-        app:layout_constraintEnd_toStartOf="@+id/stop"
+        app:layout_constraintBottom_toTopOf="@+id/chage_algorithm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/key" />
+        app:layout_constraintTop_toBottomOf="@+id/player_view" />
 
     <TextView
-        android:id="@+id/stop"
+        android:id="@+id/chage_algorithm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
         android:background="@android:color/holo_orange_dark"
         android:padding="@dimen/dp_8"
         android:paddingStart="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
-        android:text="@string/stop_streaming"
+        android:text="@string/change_algorithm"
         android:textColor="@android:color/white"
         android:textSize="@dimen/sp_18"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/start"
-        app:layout_constraintTop_toBottomOf="@+id/key" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/start_stop" />
 
 </android.support.constraint.ConstraintLayout>

@@ -42,10 +42,14 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm
                 break;
 
             case CentralizedMessage.MESSAGE_REPLY_COORDINATOR_FOUND_PREFIX:
-                mIsFindingCoordinator = false;
-                mIsCoordinatorFound = true;
-                mCoordinatorId = CentralizedMessage.getMessageContent(message);
-                connectToCoordinator();
+                String coordinatorId = CentralizedMessage.getMessageContent(message);
+                if (mCoordinator == null || coordinatorId.compareTo(mCoordinatorId) > 0) {
+                    mIsFindingCoordinator = false;
+                    mIsCoordinatorFound = true;
+                    mCoordinatorId = CentralizedMessage.getMessageContent(message);
+                    connectToCoordinator();
+                }
+                break;
 
             case CentralizedMessage.MESSAGE_REPLY_COORDINATOR_NOT_FOUND_PREFIX:
                 mCoordinatorHopeCount--;
