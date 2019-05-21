@@ -77,7 +77,7 @@ public class VideoSynchronizationActivity extends AppCompatActivity implements V
     }
 
     private void startPlayingVideo() {
-        Uri uri = Uri.parse("rtmp://192.168.0.108/live/diepnguyen");
+        Uri uri = Uri.parse("rtmp://192.168.2.137/live/ducnguyen");
         mExoPlayer = ExoPlayerFactory.newSimpleInstance(this);
         mPlayerView.setPlayer(mExoPlayer);
         RtmpDataSourceFactory rtmpDataSourceFactory = new RtmpDataSourceFactory();

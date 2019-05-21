@@ -16,9 +16,9 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
     private Host mNextHost;
     private boolean mIsFinding;
     private boolean mIsNeedGiveToken;
-    private OnSynchronizationEventListener mListener;
     private boolean mIsTokenCreated;
     private boolean mIsKeepingToken;
+    private OnSynchronizationEventListener mListener;
 
     public TokenRingAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
         super(context, looper, id);

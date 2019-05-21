@@ -20,10 +20,10 @@ public final class CentralizedAlgorithm extends SynchronizationAlgorithm {
     private boolean mIsConnectedToCoordinator;
     private boolean mIsElecting;
     private boolean mIsDenied;
+    private boolean mIsPending;
+    private int mPreviousHopeCount;
     private List<String> mRequestQueue;
     private OnSynchronizationEventListener mListener;
-    private int mPreviousHopeCount;
-    private boolean mIsPending;
 
     public CentralizedAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
         super(context, looper, id);

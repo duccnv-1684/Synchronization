@@ -2,7 +2,6 @@ package com.ducnguyen.synchronization.synchronizationalgorithm;
 
 import android.content.Context;
 import android.os.Looper;
-import android.util.Log;
 
 import com.ducnguyen.synchronization.synchronizationalgorithm.centralized.CentralizedAlgorithm;
 import com.ducnguyen.synchronization.synchronizationalgorithm.decentralized.DecentralizedAlgorithm;
@@ -64,7 +63,6 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
     public abstract void cancelRequest();
 
     protected final void sendMessage(String message, Host host) {
-        Log.e("ducnguyen", message);
         mWifiP2pConnect.send(message.getBytes(), host);
     }
 
