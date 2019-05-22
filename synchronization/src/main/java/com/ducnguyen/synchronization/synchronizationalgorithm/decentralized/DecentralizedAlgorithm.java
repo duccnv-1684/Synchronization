@@ -12,7 +12,7 @@ public final class DecentralizedAlgorithm extends SynchronizationAlgorithm {
     private OnSynchronizationEventListener mListener;
 
     public DecentralizedAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
-        super(context, looper, id);
+        super(context, looper, id, listener);
         this.mListener = listener;
     }
 

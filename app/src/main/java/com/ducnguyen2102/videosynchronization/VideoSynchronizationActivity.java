@@ -19,6 +19,7 @@ import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 
+import java.util.List;
 import java.util.UUID;
 
 public class VideoSynchronizationActivity extends AppCompatActivity implements View.OnClickListener, SynchronizationAlgorithm.OnSynchronizationEventListener {
@@ -30,7 +31,10 @@ public class VideoSynchronizationActivity extends AppCompatActivity implements V
     private boolean mIsStarted;
     private TextView mStartStop;
     private ProgressDialog mProgressDialog;
-    private TextView mUUID;
+    private TextView mUUID, mCoordinator, mNext, mPrevious, mCount, mQueue, mList;
+    private String mId;
+    private int mMessageCount = 0;
+    private TextView mPeerCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +53,12 @@ public class VideoSynchronizationActivity extends AppCompatActivity implements V
             case R.id.start_stop:
                 if (!mIsStarted) {
                     mStartStop.setText(R.string.stop_streaming);
+                    mStartStop.setBackgroundResource(R.drawable.background_circle_red);
                     mSynchronization.requestAccess();
                     mIsStarted = true;
                 } else {
                     mStartStop.setText(R.string.start_streaming);
+                    mStartStop.setBackgroundResource(R.drawable.background_circle_blue);
                     mSynchronization.cancelRequest();
                     stopPlayingVideo();
                     mIsStarted = false;
@@ -76,8 +82,48 @@ public class VideoSynchronizationActivity extends AppCompatActivity implements V
         startPlayingVideo();
     }
 
+    @Override
+    public void onSetAsCoordinator(String coordinator) {
+        String message;
+        if (coordinator.equals(mId)) message = "This is coordinator";
+        else message = "Coordinator is " + coordinator;
+        mCoordinator.setText(message);
+    }
+
+    @Override
+    public void onNextHostFound(String id) {
+        mNext.setText("Next: "+id);
+    }
+
+    @Override
+    public void onPreviousHostFound(String id) {
+        mPrevious.setText("Previous: "+id);
+    }
+
+    @Override
+    public void onMessageSent() {
+        mMessageCount++;
+        mCount.setText(mMessageCount+" message(s) was sent");
+    }
+
+    @Override
+    public void onQueueAdded(List<String> strings) {
+        mQueue.setVisibility(View.VISIBLE);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String string:strings){            stringBuilder.append(string);
+
+            stringBuilder.append("\n");
+        }
+        mList.setText(stringBuilder.toString());
+    }
+
+    @Override
+    public void onPeerFind(int count) {
+        mPeerCount.setText(count + "peer(s)");
+    }
+
     private void startPlayingVideo() {
-        Uri uri = Uri.parse("rtmp://192.168.2.137/live/ducnguyen");
+        Uri uri = Uri.parse("rtmp://192.168.0.108/live/ducnguyen");
         mExoPlayer = ExoPlayerFactory.newSimpleInstance(this);
         mPlayerView.setPlayer(mExoPlayer);
         RtmpDataSourceFactory rtmpDataSourceFactory = new RtmpDataSourceFactory();
@@ -104,13 +150,20 @@ public class VideoSynchronizationActivity extends AppCompatActivity implements V
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage(getString(R.string.R_string_msg_prepare));
         mProgressDialog.setCancelable(false);
+        mCoordinator = findViewById(R.id.coordinator);
+        mNext = findViewById(R.id.next);
+        mPrevious = findViewById(R.id.previous);
+        mCount = findViewById(R.id.count);
+        mList = findViewById(R.id.list);
+        mQueue = findViewById(R.id.queue);
+        mPeerCount = findViewById(R.id.peers);
     }
 
     private void buildSynchronization() {
-        String uuid = UUID.randomUUID().toString();
-        mUUID.setText(uuid);
+        mId = UUID.randomUUID().toString();
+        mUUID.setText("ID: "+mId);
         mSynchronizationBuilder = new SynchronizationAlgorithm.Builder()
-                .setId(uuid)
+                .setId(mId)
                 .setContext(this)
                 .setLooper(Looper.getMainLooper())
                 .setListener(this);

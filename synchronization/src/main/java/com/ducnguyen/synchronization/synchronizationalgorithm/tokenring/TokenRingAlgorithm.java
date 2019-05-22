@@ -21,7 +21,7 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
     private OnSynchronizationEventListener mListener;
 
     public TokenRingAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
-        super(context, looper, id);
+        super(context, looper, id, listener);
         mListener = listener;
     }
 
@@ -34,6 +34,7 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
                 if (mPreviousHost != null)
                     sendMessage(TokenRingMessage.messageRequestUpdateNextHost(getId()), mPreviousHost);
                 mPreviousHost = sender;
+                mListener.onPreviousHostFound(mPreviousHost.getName());
                 sendMessage(TokenRingMessage.messageReplyBecomeNextHost(getId()), sender);
                 if (mNextHost == null && !mIsFinding) findNextHost();
                 else if (!mIsTokenCreated) {
@@ -44,13 +45,11 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
             case TokenRingMessage.MESSAGE_REPLY_BECOME_NEXT_HOST_PREFIX:
                 mIsFinding = false;
                 mNextHost = sender;
+                mListener.onNextHostFound(mNextHost.getName());
                 break;
             case TokenRingMessage.MESSAGE_REQUEST_UPDATE_NEXT_HOST_PREFIX:
                 mNextHost = null;
-                sendMessage(TokenRingMessage.messageReplyUpdateNextHost(getId()), sender);
                 findNextHost();
-                break;
-            case TokenRingMessage.MESSAGE_REPLY_UPDATE_NEXT_HOST_PREFIX:
                 break;
             case TokenRingMessage.MESSAGE_GIVE_TOKEN_PREFIX:
                 mIsTokenCreated = true;
@@ -80,6 +79,7 @@ public final class TokenRingAlgorithm extends SynchronizationAlgorithm {
     @Override
     public void onPeersUpdate(Set<Host> hosts) {
         setHosts(hosts);
+        mListener.onPeerFind(hosts.size());
     }
 
     private void findNextHost() {

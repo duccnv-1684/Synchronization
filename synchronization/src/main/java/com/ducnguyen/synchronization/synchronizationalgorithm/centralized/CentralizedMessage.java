@@ -8,9 +8,7 @@ final class CentralizedMessage {
     static final String MESSAGE_REPLY_COORDINATOR_NOT_FOUND_PREFIX = "1001:";
     static final String MESSAGE_REPLY_COORDINATOR_FOUND_PREFIX = "1002:";
     static final String MESSAGE_REQUEST_ENQUEUE_PREFIX = "1003:";
-    static final String MESSAGE_REPLY_ENQUEUE_PREFIX = "1004:";
     static final String MESSAGE_REQUEST_DEQUEUE_PREFIX = "1005:";
-    static final String MESSAGE_REPLY_DEQUEUE_PREFIX = "1006:";
     static final String MESSAGE_REPLY_GIVE_ACCESS_PREFIX = "1007:";
     static final String MESSAGE_REQUEST_ELECTION_PREFIX = "1008:";
     static final String MESSAGE_REPLY_ELECTION_ACCEPT_PREFIX = "1009:";
@@ -32,17 +30,11 @@ final class CentralizedMessage {
         return makeMessage(MESSAGE_REQUEST_ENQUEUE_PREFIX, senderId);
     }
 
-    static String messageReplyEnqueue(String senderId) {
-        return makeMessage(MESSAGE_REPLY_ENQUEUE_PREFIX, senderId);
-    }
 
     static String messageRequestDequeue(String senderId) {
         return makeMessage(MESSAGE_REQUEST_DEQUEUE_PREFIX, senderId);
     }
 
-    static String messageReplyDequeue(String senderId) {
-        return makeMessage(MESSAGE_REPLY_DEQUEUE_PREFIX, senderId);
-    }
 
     static String messageReplyGiveAccess(String senderId) {
         return makeMessage(MESSAGE_REPLY_GIVE_ACCESS_PREFIX, senderId);

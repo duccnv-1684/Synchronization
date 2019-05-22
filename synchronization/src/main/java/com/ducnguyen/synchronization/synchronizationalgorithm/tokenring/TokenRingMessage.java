@@ -4,8 +4,6 @@ final class TokenRingMessage {
     static final String MESSAGE_REQUEST_BECOME_NEXT_HOST_PREFIX = "4000:";
     static final String MESSAGE_REPLY_BECOME_NEXT_HOST_PREFIX = "4001:";
     static final String MESSAGE_REQUEST_UPDATE_NEXT_HOST_PREFIX = "4002:";
-    static final String MESSAGE_REPLY_UPDATE_NEXT_HOST_PREFIX = "4003:";
-    static final String MESSAGE_REQUEST_CREATE_TOKEN = "4004:";
     static final String MESSAGE_GIVE_TOKEN_PREFIX = "4005:";
 
     private TokenRingMessage() {
@@ -23,13 +21,6 @@ final class TokenRingMessage {
         return makeMessage(MESSAGE_REQUEST_UPDATE_NEXT_HOST_PREFIX, senderId);
     }
 
-    static String messageReplyUpdateNextHost(String senderId) {
-        return makeMessage(MESSAGE_REPLY_UPDATE_NEXT_HOST_PREFIX, senderId);
-    }
-
-    static String messageRequestCreateToken(String creatorId){
-        return makeMessage(MESSAGE_REPLY_UPDATE_NEXT_HOST_PREFIX, creatorId);
-    }
 
     static String messageGiveToken(String senderId) {
         return makeMessage(MESSAGE_GIVE_TOKEN_PREFIX, senderId);

@@ -11,6 +11,7 @@ import com.ducnguyen.synchronization.wifip2p.connect.WifiP2pConnect;
 import com.ducnguyen.synchronization.wifip2p.discovery.WifiP2pDiscovery;
 import com.ducnguyen.synchronization.wifip2p.model.Host;
 
+import java.util.List;
 import java.util.Set;
 
 public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listener, WifiP2pDiscovery.Listener {
@@ -23,11 +24,13 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
     private WifiP2pDiscovery mWifiP2pDiscovery;
     private WifiP2pConnect mWifiP2pConnect;
     private Set<Host> mHosts;
+    private OnSynchronizationEventListener mListener;
 
-    public SynchronizationAlgorithm(Context context, Looper looper, String id) {
+    public SynchronizationAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
         mContext = context;
         mLooper = looper;
         mId = id;
+        this.mListener = listener;
         initialize();
     }
 
@@ -63,6 +66,7 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
     public abstract void cancelRequest();
 
     protected final void sendMessage(String message, Host host) {
+        mListener.onMessageSent();
         mWifiP2pConnect.send(message.getBytes(), host);
     }
 
@@ -110,6 +114,18 @@ public abstract class SynchronizationAlgorithm implements WifiP2pConnect.Listene
 
     public interface OnSynchronizationEventListener {
         void onRequestAccepted();
+
+        void onSetAsCoordinator(String coordinator);
+
+        void onNextHostFound(String id);
+
+        void onPreviousHostFound(String id);
+
+        void onMessageSent();
+
+        void onQueueAdded(List<String> strings);
+
+        void onPeerFind(int count);
     }
 
     public static class Builder {

@@ -17,13 +17,15 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
     private List<Host> mRequestingHosts;
     private List<String> mAcceptedHostIds;
     private List<Host> mRequestQueue;
+    private List<String> mRequestId;
     private long mTimeStamp;
     private OnSynchronizationEventListener mListener;
 
     public DistributedAlgorithm(Context context, Looper looper, String id, OnSynchronizationEventListener listener) {
-        super(context, looper, id);
+        super(context, looper, id, listener);
         mListener = listener;
         mRequestQueue = new ArrayList<>();
+        mRequestId = new ArrayList<>();
     }
 
     @Override
@@ -45,6 +47,9 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
         mIsRequesting = false;
         for (Host host : mRequestQueue)
             sendMessage(DistributedMessage.messageReplyOk(getId()), host);
+        mRequestQueue.clear();
+        mRequestId.clear();
+        mListener.onQueueAdded(mRequestId);
     }
 
     @Override
@@ -54,11 +59,17 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
             case DistributedMessage.MESSAGE_REQUEST_ACCESS:
                 if (mIsAccessing) {
                     mRequestQueue.add(sender);
+                    mRequestId.add(sender.getName());
+                    mListener.onQueueAdded(mRequestId);
                 } else if (mIsRequesting) {
                     long timeStamp = Long.valueOf(DistributedMessage.getMessageContent(message));
                     if (this.mTimeStamp > timeStamp)
                         sendMessage(DistributedMessage.messageReplyOk(getId()), sender);
-                    else mRequestQueue.add(sender);
+                    else {
+                        mRequestQueue.add(sender);
+                        mRequestId.add(sender.getName());
+                        mListener.onQueueAdded(mRequestId);
+                    }
                 } else {
                     sendMessage(DistributedMessage.messageReplyOk(getId()), sender);
                 }
@@ -77,5 +88,6 @@ public final class DistributedAlgorithm extends SynchronizationAlgorithm {
     @Override
     public void onPeersUpdate(Set<Host> hosts) {
         setHosts(hosts);
+        mListener.onPeerFind(hosts.size());
     }
 }
