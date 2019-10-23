@@ -40,7 +40,7 @@ You have to you enum class SynchronizationAlgorithmType to select. Example: `Syn
 ### Start synchronize
 When you've created an insance of SynchronizationAlgorithm, we can call `startSynchronize()` method to start synchronizing.
 ### Request access to shared resource
-After an instance of SynchronizationAlgorithm was created, if you want to access to shared resources, we can call `requestAccess()` to send an request and sit back to wait for `onRequestAccepted() is fire. At this point, you can access to shared resource.
+After an instance of SynchronizationAlgorithm was created, if you want to access to shared resources, we can call `requestAccess()` to send an request and sit back to wait for `onRequestAccepted()` is fire. At this point, you can access to shared resource.
 If you want to abort request, just call `cancelRequest()` method.
 ### Stop synchronize
 When you finish the synchronization process, call `stopSynchronize()` to stop.
